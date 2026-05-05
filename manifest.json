@@ -1,0 +1,70 @@
+{
+  "Version": "0.1.0",
+  "Author": "sonyddr666",
+  "Name": "DeckDeckDeco",
+  "Description": "AI/dev automation cockpit for Ulanzi D200H: scripts, status cards, STT, LLM, TTS and translation.",
+  "Icon": "resources/icons/plugin.svg",
+  "Category": "AI Automation",
+  "CategoryIcon": "resources/icons/plugin.svg",
+  "CodePath": "plugin/app.js",
+  "Type": "JavaScript",
+  "Inspect": "--inspect=127.0.0.1:9201",
+  "UUID": "com.ulanzi.ulanzistudio.deckdeckdeco",
+  "Actions": [
+    {
+      "Name": "Run Command",
+      "Icon": "resources/icons/run.svg",
+      "PropertyInspectorPath": "property-inspector/inspector.html?action=runCommand",
+      "States": [{ "Image": "resources/icons/run.svg" }],
+      "Tooltip": "Run a local command and show OK/FAIL on the key",
+      "UUID": "com.ulanzi.ulanzistudio.deckdeckdeco.runCommand",
+      "Controllers": ["Keypad"],
+      "Devices": ["D200H", "D200", "D200X"]
+    },
+    {
+      "Name": "Snippet Card",
+      "Icon": "resources/icons/snippet.svg",
+      "PropertyInspectorPath": "property-inspector/inspector.html?action=snippetCard",
+      "States": [{ "Image": "resources/icons/snippet.svg" }],
+      "Tooltip": "Show a short command/file/AI result as a card on the key",
+      "UUID": "com.ulanzi.ulanzistudio.deckdeckdeco.snippetCard",
+      "Controllers": ["Keypad"],
+      "Devices": ["D200H", "D200", "D200X"]
+    },
+    {
+      "Name": "Voice AI",
+      "Icon": "resources/icons/voice.svg",
+      "PropertyInspectorPath": "property-inspector/inspector.html?action=voiceAI",
+      "States": [{ "Image": "resources/icons/voice.svg" }],
+      "Tooltip": "Push-to-talk STT -> LLM -> TTS pipeline",
+      "UUID": "com.ulanzi.ulanzistudio.deckdeckdeco.voiceAI",
+      "Controllers": ["Keypad"],
+      "Devices": ["D200H", "D200", "D200X"]
+    },
+    {
+      "Name": "Translator",
+      "Icon": "resources/icons/translate.svg",
+      "PropertyInspectorPath": "property-inspector/inspector.html?action=translator",
+      "States": [{ "Image": "resources/icons/translate.svg" }],
+      "Tooltip": "STT -> Translate -> TTS pipeline",
+      "UUID": "com.ulanzi.ulanzistudio.deckdeckdeco.translator",
+      "Controllers": ["Keypad"],
+      "Devices": ["D200H", "D200", "D200X"]
+    },
+    {
+      "Name": "YouTube Control",
+      "Icon": "resources/icons/youtube.svg",
+      "PropertyInspectorPath": "property-inspector/inspector.html?action=youtubeControl",
+      "States": [{ "Image": "resources/icons/youtube.svg" }],
+      "Tooltip": "Open/control YouTube on the PC, with deck status feedback",
+      "UUID": "com.ulanzi.ulanzistudio.deckdeckdeco.youtubeControl",
+      "Controllers": ["Keypad"],
+      "Devices": ["D200H", "D200", "D200X"]
+    }
+  ],
+  "OS": [
+    { "Platform": "windows", "MinimumVersion": "10" },
+    { "Platform": "mac", "MinimumVersion": "10.13" }
+  ],
+  "Software": { "MinVersion": "3.0.11" }
+}
