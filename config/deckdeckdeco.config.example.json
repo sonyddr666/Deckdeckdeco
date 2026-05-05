@@ -1,0 +1,40 @@
+{
+  "runCommand": {
+    "command": "node scripts/examples/fake-test.mjs",
+    "cwd": "{pluginRoot}",
+    "title": "TEST",
+    "runningLabel": "RUN",
+    "successLabel": "OK",
+    "failLabel": "FAIL",
+    "successSoundCommand": "",
+    "failSoundCommand": ""
+  },
+  "snippetCard": {
+    "sourceCommand": "node scripts/examples/generate-snippet.mjs",
+    "sourceFile": "",
+    "intervalMs": 1000,
+    "title": "LIVE",
+    "maxLines": 4,
+    "maxCharsPerLine": 18
+  },
+  "voiceAI": {
+    "mode": "pushToTalk",
+    "recordStartCommand": "",
+    "recordStopCommand": "",
+    "sttCommand": "node scripts/examples/fake-stt.mjs --out {transcriptFile}",
+    "llmCommand": "node scripts/examples/fake-llm.mjs --in {transcriptFile} --out {responseFile}",
+    "ttsCommand": "node scripts/examples/fake-tts.mjs --in {responseFile}",
+    "title": "VOICE"
+  },
+  "translator": {
+    "sttCommand": "node scripts/examples/fake-stt.mjs --out {transcriptFile}",
+    "translateCommand": "node scripts/examples/fake-translate.mjs --in {transcriptFile} --out {responseFile} --to en",
+    "ttsCommand": "node scripts/examples/fake-tts.mjs --in {responseFile}",
+    "title": "PT>EN"
+  },
+  "youtubeControl": {
+    "url": "https://www.youtube.com/",
+    "hotkey": "Space",
+    "title": "YT"
+  }
+}
