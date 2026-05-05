@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>DeckDeckDeco Inspector</title>
+  <link rel="stylesheet" href="../libs/css/uspi.css" />
+  <style>
+    body { margin: 0; background: #1e1f22; color: #fff; font-family: Arial, sans-serif; }
+    .dd-title { padding: 14px 16px 6px; font-weight: 800; letter-spacing: .04em; }
+    .dd-help { padding: 0 16px 12px; color: #b7b7c8; font-size: 12px; line-height: 1.4; }
+    textarea.uspi-item-value { min-height: 76px; resize: vertical; }
+    .dd-row { display: none; }
+    .dd-row.active { display: block; }
+  </style>
+</head>
+<body>
+  <div class="dd-title">DeckDeckDeco</div>
+  <div class="dd-help">Configure o botao. Campos vazios usam config/deckdeckdeco.config.json.</div>
+
+  <div class="uspi-wrapper">
+    <form id="property-inspector">
+      <input type="hidden" name="actionType" id="actionType" />
+
+      <div class="uspi-item">
+        <div class="uspi-item-label">Title</div>
+        <input class="uspi-item-value" name="title" placeholder="TEST / VOICE / TRAD / LIVE" />
+      </div>
+
+      <div class="dd-row for-runCommand for-snippetCard">
+        <div class="uspi-item">
+          <div class="uspi-item-label">Command</div>
+          <textarea class="uspi-item-value" name="command" placeholder="node scripts/examples/fake-test.mjs"></textarea>
+        </div>
+      </div>
+
+      <div class="dd-row for-runCommand">
+        <div class="uspi-item">
+          <div class="uspi-item-label">Working dir</div>
+          <input class="uspi-item-value" name="cwd" placeholder="{pluginRoot}" />
+        </div>
+      </div>
+
+      <div class="dd-row for-snippetCard">
+        <div class="uspi-item">
+          <div class="uspi-item-label">Source command</div>
+          <textarea class="uspi-item-value" name="sourceCommand" placeholder="node scripts/examples/generate-snippet.mjs"></textarea>
+        </div>
+        <div class="uspi-item">
+          <div class="uspi-item-label">Interval ms</div>
+          <input class="uspi-item-value" name="intervalMs" type="number" min="500" step="100" placeholder="1000" />
+        </div>
+      </div>
+
+      <div class="dd-row for-voiceAI for-translator">
+        <div class="uspi-item">
+          <div class="uspi-item-label">STT command</div>
+          <textarea class="uspi-item-value" name="sttCommand" placeholder="node scripts/examples/fake-stt.mjs --out {transcriptFile}"></textarea>
+        </div>
+      </div>
+
+      <div class="dd-row for-voiceAI">
+        <div class="uspi-item">
+          <div class="uspi-item-label">LLM command</div>
+          <textarea class="uspi-item-value" name="llmCommand" placeholder="node scripts/examples/fake-llm.mjs --in {transcriptFile} --out {responseFile}"></textarea>
+        </div>
+      </div>
+
+      <div class="dd-row for-translator">
+        <div class="uspi-item">
+          <div class="uspi-item-label">Translate command</div>
+          <textarea class="uspi-item-value" name="translateCommand" placeholder="node scripts/examples/fake-translate.mjs --in {transcriptFile} --out {responseFile} --to en"></textarea>
+        </div>
+      </div>
+
+      <div class="dd-row for-voiceAI for-translator">
+        <div class="uspi-item">
+          <div class="uspi-item-label">TTS command</div>
+          <textarea class="uspi-item-value" name="ttsCommand" placeholder="node scripts/examples/fake-tts.mjs --in {responseFile}"></textarea>
+        </div>
+      </div>
+
+      <div class="dd-row for-youtubeControl">
+        <div class="uspi-item">
+          <div class="uspi-item-label">YouTube URL</div>
+          <input class="uspi-item-value" name="url" placeholder="https://www.youtube.com/" />
+        </div>
+        <div class="uspi-item">
+          <div class="uspi-item-label">Hotkey</div>
+          <input class="uspi-item-value" name="hotkey" placeholder="Space" />
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <script src="../libs/js/constants.js"></script>
+  <script src="../libs/js/eventEmitter.js"></script>
+  <script src="../libs/js/timers.js"></script>
+  <script src="../libs/js/utils.js"></script>
+  <script src="../libs/js/ulanziApi.js"></script>
+  <script src="./inspector.js"></script>
+</body>
+</html>
