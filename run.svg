@@ -1,0 +1,163 @@
+const BASE_UUID = 'com.ulanzi.ulanzistudio.deckdeckdeco';
+const query = new URLSearchParams(window.location.search);
+let actionType = query.get('action') || inferActionFromUuid(query.get('uuid')) || 'runCommand';
+let socket = null;
+let saveTimer = null;
+let connected = false;
+
+const form = document.getElementById('form');
+const actionInput = document.getElementById('actionType');
+const saveState = document.getElementById('saveState');
+const conn = document.getElementById('conn');
+
+const defaults = {
+  runCommand: { title: 'PY', cwd: '{pluginRoot}', command: 'py -3 scripts/examples/teste.py', runningLabel: 'RUN', successLabel: 'OK', failLabel: 'FAIL', successSoundCommand: '', failSoundCommand: '' },
+  snippetCard: { title: 'LIVE', sourceCommand: 'node scripts/examples/generate-snippet.mjs', sourceFile: '', intervalMs: 1000, maxLines: 4, maxCharsPerLine: 18 },
+  voiceAI: { title: 'VOICE', recordStartCommand: '', recordStopCommand: '', sttCommand: 'node scripts/examples/fake-stt.mjs --out {transcriptFile}', llmCommand: 'node scripts/examples/fake-llm.mjs --in {transcriptFile} --out {responseFile}', ttsCommand: 'node scripts/examples/fake-tts.mjs --in {responseFile}' },
+  translator: { title: 'PT>EN', sttCommand: 'node scripts/examples/fake-stt.mjs --out {transcriptFile}', translateCommand: 'node scripts/examples/fake-translate.mjs --in {transcriptFile} --out {responseFile} --to en', ttsCommand: 'node scripts/examples/fake-tts.mjs --in {responseFile}' },
+  youtubeControl: { title: 'YT', url: 'https://www.youtube.com/', hotkey: 'Space' },
+  controlPanel: { title: 'PANEL' }
+};
+
+const presets = {
+  python: { title: 'PY', cwd: '{pluginRoot}', command: 'py -3 scripts/examples/teste.py', runningLabel: 'RUN', successLabel: 'OK', failLabel: 'FAIL' },
+  node: { title: 'NODE', cwd: '{pluginRoot}', command: 'node scripts/examples/fake-test.mjs', runningLabel: 'RUN', successLabel: 'OK', failLabel: 'FAIL' },
+  ps: { title: 'PS', cwd: '{pluginRoot}', command: 'powershell -File scripts/examples/meu-script.ps1', runningLabel: 'RUN', successLabel: 'OK', failLabel: 'FAIL' }
+};
+
+boot();
+
+function boot() {
+  setAction(actionType, false);
+  connect();
+  form.addEventListener('input', () => scheduleSave());
+  form.addEventListener('change', () => scheduleSave());
+  document.querySelectorAll('.tab').forEach((tab) => tab.addEventListener('click', () => setAction(tab.dataset.action, true)));
+  document.querySelectorAll('[data-preset]').forEach((btn) => btn.addEventListener('click', () => applyValues(presets[btn.dataset.preset] || {}, true)));
+}
+
+function connect() {
+  const address = query.get('address') || '127.0.0.1';
+  const port = query.get('port') || '3906';
+  const uuid = query.get('uuid') || `${BASE_UUID}.${actionType}`;
+  try {
+    socket = new WebSocket(`ws://${address}:${port}`);
+  } catch (error) {
+    conn.textContent = 'offline';
+    return;
+  }
+  socket.addEventListener('open', () => {
+    connected = true;
+    conn.textContent = 'conectado';
+    socket.send(JSON.stringify({ code: 0, cmd: 'connected', uuid, key: query.get('key') || '', actionid: query.get('actionid') || '' }));
+    requestSettings();
+  });
+  socket.addEventListener('close', () => { connected = false; conn.textContent = 'desconectado'; });
+  socket.addEventListener('error', () => { conn.textContent = 'erro websocket'; });
+  socket.addEventListener('message', (event) => {
+    let data = null;
+    try { data = JSON.parse(event.data); } catch { return; }
+    const param = data?.param || data?.settings || data?.payload;
+    if (param && typeof param === 'object') applyValues(param, false);
+  });
+}
+
+function requestSettings() {
+  send('getSettings', {});
+}
+
+function setAction(type, saveNow) {
+  actionType = type || 'runCommand';
+  actionInput.value = actionType;
+  document.getElementById('title').textContent = labelFor(actionType);
+  document.querySelectorAll('.tab').forEach((tab) => tab.classList.toggle('active', tab.dataset.action === actionType));
+  document.querySelectorAll('.section[data-section]').forEach((section) => section.classList.toggle('active', section.dataset.section === actionType));
+  applyValues(defaults[actionType] || {}, false, true);
+  updatePreview();
+  if (saveNow) scheduleSave();
+}
+
+function applyValues(values, saveNow, onlyEmpty = false) {
+  for (const [key, value] of Object.entries(values || {})) {
+    const fields = form.querySelectorAll(`[name="${cssEscape(key)}"]`);
+    fields.forEach((field) => {
+      if (!onlyEmpty || field.value === '') field.value = value ?? '';
+    });
+  }
+  actionInput.value = actionType;
+  updatePreview();
+  if (saveNow) scheduleSave();
+}
+
+function formValues() {
+  const values = { actionType };
+  const active = document.querySelector(`.section[data-section="${actionType}"]`);
+  if (!active) return values;
+  active.querySelectorAll('input, textarea, select').forEach((field) => {
+    if (!field.name) return;
+    values[field.name] = field.type === 'number' ? numberOrString(field.value) : field.value.trim();
+  });
+  return removeEmpty(values);
+}
+
+function scheduleSave() {
+  updatePreview();
+  saveState.textContent = 'salvando...';
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(save, 250);
+}
+
+function save() {
+  const param = formValues();
+  send('paramfromplugin', { param });
+  send('setSettings', { settings: param });
+  saveState.textContent = 'salvo';
+  saveState.className = 'saved';
+  setTimeout(() => { saveState.textContent = 'pronto'; }, 1200);
+}
+
+function send(cmd, extra) {
+  if (!connected || !socket || socket.readyState !== WebSocket.OPEN) return;
+  socket.send(JSON.stringify({ cmd, uuid: query.get('uuid') || `${BASE_UUID}.${actionType}`, key: query.get('key') || '', actionid: query.get('actionid') || '', ...extra }));
+}
+
+function updatePreview() {
+  const values = formValues();
+  document.getElementById('previewTitle').textContent = (values.title || defaults[actionType]?.title || actionType).slice(0, 10).toUpperCase();
+  document.getElementById('previewSub').textContent = actionType.toUpperCase();
+  const cmd = values.command || values.sourceCommand || values.sttCommand || values.translateCommand || values.url || '';
+  document.getElementById('previewCommand').textContent = cmd ? `→ ${cmd}` : '';
+}
+
+function labelFor(type) {
+  return ({ runCommand: 'Run Command', snippetCard: 'Snippet Card', voiceAI: 'Voice AI', translator: 'Translator', youtubeControl: 'YouTube Control', controlPanel: 'Control Panel' })[type] || 'DeckDeckDeco';
+}
+
+function inferActionFromUuid(uuid = '') {
+  const found = ['runCommand','snippetCard','voiceAI','translator','youtubeControl','controlPanel'].find((name) => uuid.includes(name));
+  return found || '';
+}
+
+function inferActionFromLocation() {
+  const path = window.location.href || '';
+  if (path.includes('voiceAI')) return 'voiceAI';
+  if (path.includes('translator')) return 'translator';
+  if (path.includes('youtubeControl')) return 'youtubeControl';
+  if (path.includes('snippetCard')) return 'snippetCard';
+  if (path.includes('controlPanel')) return 'controlPanel';
+  return 'runCommand';
+}
+
+function numberOrString(value) {
+  if (value === '') return '';
+  const n = Number(value);
+  return Number.isFinite(n) ? n : value;
+}
+
+function removeEmpty(obj) {
+  return Object.fromEntries(Object.entries(obj).filter(([key, value]) => key === 'actionType' || value !== '' && value !== null && typeof value !== 'undefined'));
+}
+
+function cssEscape(value) {
+  return String(value).replace(/"/g, '\\"');
+}

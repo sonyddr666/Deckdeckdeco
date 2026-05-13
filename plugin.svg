@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>DeckDeckDeco Inspector</title>
+  <style>
+    :root{--bg:#202124;--panel:#2b2d31;--panel2:#343741;--line:#494d58;--text:#f5f7ff;--muted:#aeb4c9;--cyan:#26f5e2;--green:#59ff9b;--red:#ff5c7a;--yellow:#ffd166;--pink:#ff4fc3}
+    *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:13px/1.45 Arial,system-ui,sans-serif}.wrap{padding:14px}.hero{border:1px solid var(--line);border-radius:14px;background:linear-gradient(135deg,rgba(38,245,226,.12),rgba(255,79,195,.08)),var(--panel);padding:14px;margin-bottom:12px}.hero h1{font-size:18px;margin:0 0 6px}.hero p{margin:0;color:var(--muted)}.badge{display:inline-flex;border:1px solid rgba(38,245,226,.45);color:var(--cyan);padding:4px 8px;border-radius:999px;font-weight:800;font-size:11px;margin-bottom:8px}.tabs{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:12px}.tab{border:1px solid var(--line);background:var(--panel);color:var(--muted);border-radius:12px;padding:9px 8px;font-weight:800;cursor:pointer}.tab.active{background:var(--cyan);border-color:var(--cyan);color:#041010}.section{display:none;border:1px solid var(--line);border-radius:14px;background:var(--panel);padding:12px;margin-bottom:12px}.section.active{display:block}.section h2{margin:0 0 10px;font-size:16px}.grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px}.field{margin:0 0 10px}.field label{display:block;color:var(--muted);font-weight:800;margin:0 0 5px}.field small{display:block;color:#8f96aa;margin-top:4px}input,textarea,select{width:100%;border:1px solid var(--line);border-radius:10px;background:#1b1c20;color:var(--text);padding:9px 10px;font:inherit;outline:none}textarea{min-height:74px;resize:vertical;font-family:Consolas,monospace}input:focus,textarea:focus,select:focus{border-color:var(--cyan);box-shadow:0 0 0 3px rgba(38,245,226,.12)}.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.btn{border:0;border-radius:999px;background:#fff;color:#101218;padding:9px 12px;font-weight:900;cursor:pointer}.btn.secondary{background:var(--panel2);border:1px solid var(--line);color:var(--text)}.btn.green{background:var(--green)}.btn.pink{background:var(--pink);color:#fff}.btn.red{background:var(--red);color:#fff}.note{border:1px solid rgba(255,209,102,.42);background:rgba(255,209,102,.08);color:#ffe3a1;border-radius:12px;padding:10px;margin-top:10px}.ok{border:1px solid rgba(89,255,155,.38);background:rgba(89,255,155,.08);color:#caffdf;border-radius:12px;padding:10px;margin-top:10px}.preview{display:grid;grid-template-columns:96px 1fr;gap:10px;align-items:center}.key{width:92px;height:92px;border-radius:16px;border:3px solid rgba(255,255,255,.15);background:linear-gradient(160deg,#111827,#080b12);display:grid;place-items:center;text-align:center;overflow:hidden}.key-title{font-weight:900;font-size:15px}.key-sub{font-size:10px;color:var(--muted)}.tri{width:0;height:0;border-top:14px solid transparent;border-bottom:14px solid transparent;border-left:24px solid var(--green);margin:0 auto 5px}.status{position:sticky;bottom:0;background:#18191d;border-top:1px solid var(--line);padding:10px 14px;color:var(--muted);display:flex;justify-content:space-between;gap:8px}.saved{color:var(--green);font-weight:900}.hidden{display:none}.mono{font-family:Consolas,monospace}.danger{color:#ffc3cf} @media(max-width:360px){.tabs,.grid2,.preview{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="hero">
+      <div class="badge">DeckDeckDeco vivo</div>
+      <h1 id="title">Painel do botão</h1>
+      <p>Configura aqui dentro do plugin. Salvou aqui, o botão usa. Nada de HTML solto fingindo que trabalha.</p>
+    </div>
+
+    <div class="tabs" id="tabs">
+      <button class="tab" data-action="runCommand">▶ Run</button>
+      <button class="tab" data-action="snippetCard">▣ Snippet</button>
+      <button class="tab" data-action="voiceAI">🎙 Voice</button>
+      <button class="tab" data-action="translator">🌐 Tradutor</button>
+      <button class="tab" data-action="youtubeControl">▶ YouTube</button>
+      <button class="tab" data-action="controlPanel">⚙ Painel</button>
+    </div>
+
+    <form id="form">
+      <input type="hidden" name="actionType" id="actionType" />
+
+      <div class="section" data-section="runCommand">
+        <h2>Run Command</h2>
+        <div class="grid2">
+          <div class="field"><label>Título</label><input name="title" placeholder="PY / TEST / BUILD" /></div>
+          <div class="field"><label>Pasta de execução</label><input name="cwd" placeholder="{pluginRoot}" /></div>
+        </div>
+        <div class="field"><label>Comando que roda no PC</label><textarea name="command" placeholder="py -3 scripts/examples/teste.py"></textarea><small>Primeiro testa no PowerShell. Se rodar lá, o botão roda também.</small></div>
+        <div class="grid2">
+          <div class="field"><label>Label rodando</label><input name="runningLabel" placeholder="RUN" /></div>
+          <div class="field"><label>Label sucesso</label><input name="successLabel" placeholder="OK" /></div>
+        </div>
+        <div class="field"><label>Label falha</label><input name="failLabel" placeholder="FAIL" /></div>
+        <div class="field"><label>Comando som sucesso opcional</label><input name="successSoundCommand" placeholder="" /></div>
+        <div class="field"><label>Comando som falha opcional</label><input name="failSoundCommand" placeholder="" /></div>
+        <div class="actions"><button type="button" class="btn green" data-preset="python">Exemplo Python</button><button type="button" class="btn secondary" data-preset="node">Exemplo Node</button><button type="button" class="btn secondary" data-preset="ps">Exemplo PowerShell</button></div>
+      </div>
+
+      <div class="section" data-section="snippetCard">
+        <h2>Snippet Card</h2>
+        <div class="grid2"><div class="field"><label>Título</label><input name="title" placeholder="LIVE" /></div><div class="field"><label>Intervalo ms</label><input name="intervalMs" type="number" min="500" step="100" placeholder="1000" /></div></div>
+        <div class="field"><label>Comando que gera texto</label><textarea name="sourceCommand" placeholder="node scripts/examples/generate-snippet.mjs"></textarea></div>
+        <div class="field"><label>Arquivo de texto opcional</label><input name="sourceFile" placeholder="{runtimeDir}/status.txt" /></div>
+        <div class="grid2"><div class="field"><label>Máximo linhas</label><input name="maxLines" type="number" placeholder="4" /></div><div class="field"><label>Caracteres por linha</label><input name="maxCharsPerLine" type="number" placeholder="18" /></div></div>
+      </div>
+
+      <div class="section" data-section="voiceAI">
+        <h2>Voice AI</h2>
+        <div class="field"><label>Título</label><input name="title" placeholder="VOICE" /></div>
+        <div class="field"><label>Comando ao apertar e segurar</label><textarea name="recordStartCommand" placeholder=""></textarea></div>
+        <div class="field"><label>Comando ao soltar</label><textarea name="recordStopCommand" placeholder=""></textarea></div>
+        <div class="field"><label>STT command</label><textarea name="sttCommand" placeholder="node scripts/examples/fake-stt.mjs --out {transcriptFile}"></textarea></div>
+        <div class="field"><label>LLM command</label><textarea name="llmCommand" placeholder="node scripts/examples/fake-llm.mjs --in {transcriptFile} --out {responseFile}"></textarea></div>
+        <div class="field"><label>TTS command</label><textarea name="ttsCommand" placeholder="node scripts/examples/fake-tts.mjs --in {responseFile}"></textarea></div>
+      </div>
+
+      <div class="section" data-section="translator">
+        <h2>Translator</h2>
+        <div class="field"><label>Título</label><input name="title" placeholder="PT>EN" /></div>
+        <div class="field"><label>STT command</label><textarea name="sttCommand" placeholder="node scripts/examples/fake-stt.mjs --out {transcriptFile}"></textarea></div>
+        <div class="field"><label>Translate command</label><textarea name="translateCommand" placeholder="node scripts/examples/fake-translate.mjs --in {transcriptFile} --out {responseFile} --to en"></textarea></div>
+        <div class="field"><label>TTS command</label><textarea name="ttsCommand" placeholder="node scripts/examples/fake-tts.mjs --in {responseFile}"></textarea></div>
+      </div>
+
+      <div class="section" data-section="youtubeControl">
+        <h2>YouTube Control</h2>
+        <div class="field"><label>Título</label><input name="title" placeholder="YT" /></div>
+        <div class="field"><label>URL</label><input name="url" placeholder="https://www.youtube.com/" /></div>
+        <div class="field"><label>Hotkey</label><input name="hotkey" placeholder="Space" /></div>
+      </div>
+
+      <div class="section" data-section="controlPanel">
+        <h2>Painel</h2>
+        <div class="field"><label>Título</label><input name="title" placeholder="PANEL" /></div>
+        <div class="note">Arrasta essa action para uma tecla se quiser um botão que abre esta página/painel. As outras actions são as que executam comando de verdade.</div>
+        <div class="ok">Run Command é o botão para Python, Node, PowerShell, build, teste, docker e afins.</div>
+      </div>
+
+      <div class="section active" id="previewBox">
+        <h2>Prévia</h2>
+        <div class="preview"><div class="key"><div><div class="tri"></div><div class="key-title" id="previewTitle">RUN</div><div class="key-sub" id="previewSub">READY</div></div></div><div><p>O botão roda no PC. Node mantém o plugin vivo. Python só precisa existir se teu comando for Python.</p><p class="mono" id="previewCommand"></p></div></div>
+      </div>
+    </form>
+  </div>
+  <div class="status"><span id="conn">conectando...</span><span id="saveState">aguardando</span></div>
+  <script src="./inspector.js"></script>
+</body>
+</html>
