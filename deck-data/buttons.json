@@ -1,0 +1,42 @@
+{
+  "buttons": [
+    {
+      "id": "A",
+      "title": "A",
+      "image": "deck-data/assets/a.svg",
+      "action": "none"
+    },
+    {
+      "id": "B",
+      "title": "PY",
+      "image": "deck-data/assets/b.svg",
+      "action": "command",
+      "command": "py -3 deck-data/scripts/hello.py",
+      "cwd": "{pluginRoot}",
+      "showStatus": false
+    },
+    {
+      "id": "TOOLS",
+      "title": "TOOLS",
+      "image": "deck-data/assets/folder.svg",
+      "action": "page",
+      "targetPage": "tools"
+    },
+    {
+      "id": "BACK",
+      "title": "BACK",
+      "image": "deck-data/assets/back.svg",
+      "action": "back"
+    },
+    {
+      "id": "GLITCH",
+      "title": "BUG",
+      "image": "resources/icons/glitch.svg",
+      "action": "glitch",
+      "folder": "resources/glitch",
+      "durationMs": 1600,
+      "frameMs": 110,
+      "showStatus": false
+    }
+  ]
+}

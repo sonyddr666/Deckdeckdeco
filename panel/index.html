@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>DeckDeckDeco v10k</title>
+  <link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+  <main class="shell">
+    <section class="hero">
+      <div class="badge">DeckDeckDeco v10k</div>
+      <h1>Construtor de Smart Buttons</h1>
+      <p>Crie perfis A/B/C, escolha imagem ou GIF, defina ação e salve em arquivos editáveis dentro de <code>deck-data/</code>. Nada muda ícone sozinho se você não mandar.</p>
+      <div class="bar">
+        <button id="saveSmart" class="primary">Salvar Smart Buttons</button>
+        <button id="reloadSmart">Recarregar</button>
+        <button id="openFolder">Abrir pasta do plugin</button>
+        <button id="createPy">Criar exemplo Python</button>
+      </div>
+    </section>
+
+    <section class="status" id="status">Carregando...</section>
+
+    <div class="grid">
+      <aside class="tabs">
+        <button class="tab active" data-tab="smartBuilder">Smart Builder</button>
+        <button class="tab" data-tab="pagesBuilder">Pastas virtuais</button>
+        <button class="tab" data-tab="quickGuide">Como usar</button>
+        <button class="tab" data-tab="legacy">Actions antigas</button>
+        <button class="tab" data-tab="rawSmart">JSON Smart cru</button>
+        <button class="tab" data-tab="rawConfig">JSON Config cru</button>
+      </aside>
+
+      <section class="card active" id="smartBuilder">
+        <h2>Botões criáveis</h2>
+        <p>Esses perfis aparecem no seletor do <strong>Smart Button</strong> no painel pequeno do Ulanzi.</p>
+        <div class="split">
+          <div>
+            <div class="bar"><button id="addButton">Criar novo perfil</button></div>
+            <div id="buttonList" class="list"></div>
+          </div>
+          <div class="editor">
+            <h3>Editar perfil</h3>
+            <label>ID</label><input id="btnId" placeholder="A" />
+            <label>Título</label><input id="btnTitle" placeholder="Botão A" />
+            <label>Imagem/GIF</label><input id="btnImage" placeholder="deck-data/assets/a.svg" />
+            <div class="bar">
+              <input id="assetFile" type="file" accept="image/*,.gif,.svg" />
+              <button id="uploadAsset" type="button">Enviar imagem/GIF</button>
+            </div>
+            <label>Ação ao apertar</label>
+            <select id="btnAction">
+              <option value="none">não fazer nada</option>
+              <option value="command">rodar comando/script</option>
+              <option value="url">abrir URL</option>
+              <option value="page">abrir pasta virtual/página</option>
+              <option value="back">voltar página</option>
+              <option value="glitch">glitch usando resources/glitch</option>
+            </select>
+            <label>Comando/script</label><textarea id="btnCommand" placeholder="py -3 deck-data/scripts/hello.py"></textarea>
+            <label>URL</label><input id="btnUrl" placeholder="https://..." />
+            <label>Página alvo</label><input id="btnTargetPage" placeholder="tools" />
+            <div class="three">
+              <div><label>Mostrar RUN/OK?</label><select id="btnShowStatus"><option value="false">não</option><option value="true">sim</option></select></div>
+              <div><label>Duração glitch</label><input id="btnDuration" type="number" placeholder="1600" /></div>
+              <div><label>Frame glitch</label><input id="btnFrame" type="number" placeholder="110" /></div>
+            </div>
+            <div class="bar"><button id="applyButton" class="primary">Aplicar perfil</button><button id="deleteButton" class="danger">Apagar perfil</button></div>
+            <div class="preview" id="previewBox">Prévia</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="card" id="pagesBuilder">
+        <h2>Pastas virtuais do deck</h2>
+        <p>Use Smart Button em modo <strong>página</strong> com slotIndex 1, 2, 3... A página decide qual perfil aparece em cada slot.</p>
+        <label>Página atual para editar</label><select id="pageSelect"></select>
+        <div class="bar"><button id="addPage">Criar página</button><button id="deletePage" class="danger">Apagar página</button></div>
+        <div id="slots" class="slots"></div>
+      </section>
+
+      <section class="card" id="quickGuide">
+        <h2>Uso simples</h2>
+        <ol>
+          <li>Crie perfis A, B, C no painel web.</li>
+          <li>Arraste <strong>Smart Button</strong> para uma tecla do D200H.</li>
+          <li>No painel pequeno do Ulanzi, escolha modo <strong>manual</strong> e perfil <strong>A</strong>, ou modo <strong>página</strong> e slotIndex.</li>
+          <li>A tecla mostra a imagem/GIF do perfil. Ela só muda se a ação configurada mandar.</li>
+        </ol>
+        <p>Para pasta virtual: crie um perfil com ação <strong>abrir pasta virtual/página</strong> e targetPage. Ao apertar, todos os Smart Buttons em modo página trocam conforme os slots daquela página.</p>
+      </section>
+
+      <section class="card" id="legacy">
+        <h2>Actions antigas ainda existem</h2>
+        <p>Run Command, YouTube, Voice AI etc continuam funcionando. Mas a ideia principal v10k é usar <strong>Smart Button</strong> + arquivos em <code>deck-data/</code>.</p>
+        <div class="bar"><button id="saveConfig">Salvar config antiga</button><button id="reloadConfig">Recarregar config antiga</button></div>
+      </section>
+
+      <section class="card" id="rawSmart">
+        <h2>JSON Smart cru</h2>
+        <textarea id="rawSmartText" class="raw"></textarea>
+        <div class="bar"><button id="applySmartRaw">Aplicar Smart JSON</button></div>
+      </section>
+
+      <section class="card" id="rawConfig">
+        <h2>JSON Config cru</h2>
+        <textarea id="rawConfigText" class="raw"></textarea>
+        <div class="bar"><button id="applyConfigRaw">Aplicar Config JSON</button></div>
+      </section>
+    </div>
+  </main>
+  <script src="/panel.js"></script>
+</body>
+</html>

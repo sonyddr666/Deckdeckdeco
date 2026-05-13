@@ -1,0 +1,7 @@
+{
+  "defaultPage": "main",
+  "pages": {
+    "main": ["A", "B", "TOOLS", "GLITCH"],
+    "tools": ["BACK", "A", "B", "GLITCH"]
+  }
+}

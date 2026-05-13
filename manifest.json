@@ -1,24 +1,208 @@
-import fs from 'fs';
-import path from 'path';
-
-const input = arg('--in') || '.deckdeckdeco/transcript.txt';
-const out = arg('--out') || '.deckdeckdeco/response.txt';
-const to = arg('--to') || 'en';
-const source = read(input).trim();
-
-const translated = to.toLowerCase().startsWith('en')
-  ? 'Send this to the client tomorrow.'
-  : 'Manda isso para o cliente amanha.';
-
-fs.mkdirSync(path.dirname(out), { recursive: true });
-fs.writeFileSync(out, `${translated}\nsource: ${source || 'empty'}\n`, 'utf8');
-console.log('translation written');
-
-function arg(name) {
-  const index = process.argv.indexOf(name);
-  return index >= 0 ? process.argv[index + 1] : '';
-}
-
-function read(file) {
-  try { return fs.readFileSync(file, 'utf8'); } catch { return ''; }
+{
+  "Version": "10.1.0",
+  "Author": "sonyddr666",
+  "Name": "DeckDeckDeco",
+  "Description": "DeckDeckDeco v10k clean: Smart Button profiles, clean inspectors, web control panel, editable assets and scripts.",
+  "Icon": "resources/icons/plugin.svg",
+  "Category": "AI Automation",
+  "CategoryIcon": "resources/icons/plugin.svg",
+  "CodePath": "plugin/app.js",
+  "Type": "JavaScript",
+  "Inspect": "--inspect=127.0.0.1:9201",
+  "UUID": "com.ulanzi.ulanzistudio.deckdeckdeco",
+  "Actions": [
+    {
+      "Name": "Control Panel",
+      "Icon": "resources/icons/plugin.svg",
+      "PropertyInspectorPath": "property-inspector/controlPanel.html",
+      "States": [
+        {
+          "Image": "resources/icons/plugin.svg"
+        }
+      ],
+      "Tooltip": "Open the full DeckDeckDeco browser panel",
+      "UUID": "com.ulanzi.ulanzistudio.deckdeckdeco.controlPanel",
+      "Controllers": [
+        "Keypad"
+      ],
+      "Devices": [
+        "D200H",
+        "D200",
+        "D200X"
+      ]
+    },
+    {
+      "Name": "Smart Button",
+      "Icon": "resources/icons/smart.svg",
+      "PropertyInspectorPath": "property-inspector/smartButton.html",
+      "States": [
+        {
+          "Image": "resources/icons/smart.svg"
+        }
+      ],
+      "Tooltip": "A configurable button loaded from deck-data/buttons.json and the web panel",
+      "UUID": "com.ulanzi.ulanzistudio.deckdeckdeco.smartButton",
+      "Controllers": [
+        "Keypad"
+      ],
+      "Devices": [
+        "D200H",
+        "D200",
+        "D200X"
+      ]
+    },
+    {
+      "Name": "Run Command",
+      "Icon": "resources/icons/run.svg",
+      "PropertyInspectorPath": "property-inspector/runCommand.html",
+      "States": [
+        {
+          "Image": "resources/icons/run.svg"
+        }
+      ],
+      "Tooltip": "Run a local command and show OK/FAIL on the key",
+      "UUID": "com.ulanzi.ulanzistudio.deckdeckdeco.runCommand",
+      "Controllers": [
+        "Keypad"
+      ],
+      "Devices": [
+        "D200H",
+        "D200",
+        "D200X"
+      ]
+    },
+    {
+      "Name": "Snippet Card",
+      "Icon": "resources/icons/snippet.svg",
+      "PropertyInspectorPath": "property-inspector/snippetCard.html",
+      "States": [
+        {
+          "Image": "resources/icons/snippet.svg"
+        }
+      ],
+      "Tooltip": "Show a short command/file/AI result as a card on the key",
+      "UUID": "com.ulanzi.ulanzistudio.deckdeckdeco.snippetCard",
+      "Controllers": [
+        "Keypad"
+      ],
+      "Devices": [
+        "D200H",
+        "D200",
+        "D200X"
+      ]
+    },
+    {
+      "Name": "Voice AI",
+      "Icon": "resources/icons/voice.svg",
+      "PropertyInspectorPath": "property-inspector/voiceAI.html",
+      "States": [
+        {
+          "Image": "resources/icons/voice.svg"
+        }
+      ],
+      "Tooltip": "Push-to-talk STT -> LLM -> TTS pipeline",
+      "UUID": "com.ulanzi.ulanzistudio.deckdeckdeco.voiceAI",
+      "Controllers": [
+        "Keypad"
+      ],
+      "Devices": [
+        "D200H",
+        "D200",
+        "D200X"
+      ]
+    },
+    {
+      "Name": "Translator",
+      "Icon": "resources/icons/translate.svg",
+      "PropertyInspectorPath": "property-inspector/translator.html",
+      "States": [
+        {
+          "Image": "resources/icons/translate.svg"
+        }
+      ],
+      "Tooltip": "STT -> Translate -> TTS pipeline",
+      "UUID": "com.ulanzi.ulanzistudio.deckdeckdeco.translator",
+      "Controllers": [
+        "Keypad"
+      ],
+      "Devices": [
+        "D200H",
+        "D200",
+        "D200X"
+      ]
+    },
+    {
+      "Name": "YouTube Control",
+      "Icon": "resources/icons/youtube.svg",
+      "PropertyInspectorPath": "property-inspector/youtubeControl.html",
+      "States": [
+        {
+          "Image": "resources/icons/youtube.svg"
+        }
+      ],
+      "Tooltip": "Open/control YouTube on the PC, with deck status feedback",
+      "UUID": "com.ulanzi.ulanzistudio.deckdeckdeco.youtubeControl",
+      "Controllers": [
+        "Keypad"
+      ],
+      "Devices": [
+        "D200H",
+        "D200",
+        "D200X"
+      ]
+    },
+    {
+      "Name": "Open Icon Folder",
+      "Icon": "resources/icons/folder.svg",
+      "PropertyInspectorPath": "property-inspector/openIconFolder.html",
+      "States": [
+        {
+          "Image": "resources/icons/folder.svg"
+        }
+      ],
+      "Tooltip": "Open the safe editable glitch icon folder",
+      "UUID": "com.ulanzi.ulanzistudio.deckdeckdeco.openIconFolder",
+      "Controllers": [
+        "Keypad"
+      ],
+      "Devices": [
+        "D200H",
+        "D200",
+        "D200X"
+      ]
+    },
+    {
+      "Name": "Glitch FX",
+      "Icon": "resources/icons/glitch.svg",
+      "PropertyInspectorPath": "property-inspector/glitchFx.html",
+      "States": [
+        {
+          "Image": "resources/icons/glitch.svg"
+        }
+      ],
+      "Tooltip": "Temporary glitch animation using images from resources/glitch",
+      "UUID": "com.ulanzi.ulanzistudio.deckdeckdeco.glitchFx",
+      "Controllers": [
+        "Keypad"
+      ],
+      "Devices": [
+        "D200H",
+        "D200",
+        "D200X"
+      ]
+    }
+  ],
+  "OS": [
+    {
+      "Platform": "windows",
+      "MinimumVersion": "10"
+    },
+    {
+      "Platform": "mac",
+      "MinimumVersion": "10.13"
+    }
+  ],
+  "Software": {
+    "MinVersion": "3.0.11"
+  }
 }

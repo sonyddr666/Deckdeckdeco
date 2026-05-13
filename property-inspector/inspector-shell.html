@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>DeckDeckDeco Inspector</title>
+  <style>
+    *{box-sizing:border-box}body{margin:0;background:#1e1f22;color:#fff;font-family:Arial,sans-serif}.wrap{padding:14px 16px 20px}.badge{display:inline-flex;border:1px solid #16ffe1;color:#16ffe1;border-radius:999px;padding:5px 9px;font-size:12px;font-weight:800;margin-bottom:10px}h1{font-size:20px;margin:0 0 6px}.help{color:#c9cede;font-size:12px;line-height:1.45;margin-bottom:12px}.box{border:1px solid #454b58;background:#292d36;border-radius:14px;padding:12px;margin:10px 0}.row{display:none}.row.active{display:block}label{display:block;color:#d5d8e4;font-size:12px;font-weight:700;margin:10px 0 5px}input,textarea,select{width:100%;background:#11141b;border:1px solid #3c4352;color:#fff;border-radius:10px;padding:9px;font:inherit}textarea{min-height:70px;resize:vertical;font-family:Consolas,monospace}.grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}button{border:0;border-radius:999px;padding:9px 12px;font-weight:800;cursor:pointer;background:#16ffe1;color:#061114}button.secondary{background:#3a4050;color:#fff}.status{position:sticky;bottom:0;background:#17191f;margin:12px -16px -20px;padding:8px 16px;display:flex;justify-content:space-between;font-size:12px}.ok{color:#5cff9d}.warn{color:#ffd166}.tiny{font-size:11px;color:#aeb5c8}.hidden{display:none!important}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="badge">DeckDeckDeco vivo</div>
+    <h1 id="title">DeckDeckDeco</h1>
+    <div class="help" id="help">Configure aqui dentro do Ulanzi. Para tela grande, clique em abrir painel completo.</div>
+
+    <div class="actions">
+      <button type="button" id="openPanel">Abrir painel completo</button>
+      <button type="button" id="openIcons" class="secondary">Abrir pasta de icones</button>
+      <button type="button" id="examplePy" class="secondary">Python exemplo</button>
+      <button type="button" id="exampleNode" class="secondary">Node exemplo</button>
+    </div>
+
+    <form id="property-inspector">
+      <input type="hidden" name="actionType" id="actionType" />
+
+      <div class="box row for-controlPanel">
+        <strong>Control Panel</strong>
+        <p class="tiny">Essa action abre a página completa no navegador quando você aperta a tecla física. O clique com mouse no Studio só seleciona a tecla, não executa.</p>
+        <label>Título</label><input name="title" placeholder="PANEL" />
+      </div>
+
+      <div class="box row for-smartButton">
+        <strong>Smart Button</strong>
+        <p class="tiny">Botao generico. Escolha um perfil criado no painel web ou use modo pagina para ele virar um slot controlado por pages.json.</p>
+        <label>Modo</label>
+        <select name="smartMode">
+          <option value="manual">manual: escolhe um perfil A/B/C</option>
+          <option value="page">pagina: usa o slot da pagina virtual atual</option>
+        </select>
+        <label>Perfil manual</label><input name="profileId" placeholder="A" />
+        <label>Slot da pagina virtual</label><input name="slotIndex" type="number" min="1" placeholder="1" />
+        <p class="tiny">No modo pagina, coloque varios Smart Buttons no deck com slotIndex 1, 2, 3... Quando um perfil abrir uma pasta virtual, esses slots trocam de conteudo.</p>
+      </div>
+
+      <div class="box row for-runCommand">
+        <strong>Run Command</strong>
+        <label>Título</label><input name="title" placeholder="PY / TEST / CMD" />
+        <label>Comando que roda no PC</label><textarea name="command" placeholder="py -3 scripts/examples/teste.py"></textarea>
+        <label>Pasta de execução</label><input name="cwd" placeholder="{pluginRoot}" />
+        <div class="grid">
+          <div><label>Rodando</label><input name="runningLabel" placeholder="RUN" /></div>
+          <div><label>Sucesso</label><input name="successLabel" placeholder="OK" /></div>
+        </div>
+        <label>Falha</label><input name="failLabel" placeholder="FAIL" />
+      </div>
+
+      <div class="box row for-snippetCard">
+        <strong>Snippet Card</strong>
+        <label>Título</label><input name="title" placeholder="LIVE" />
+        <label>Source command</label><textarea name="sourceCommand" placeholder="node scripts/examples/generate-snippet.mjs"></textarea>
+        <label>Source file</label><input name="sourceFile" placeholder="{runtimeDir}/status.txt" />
+        <div class="grid">
+          <div><label>Intervalo ms</label><input name="intervalMs" type="number" min="500" step="100" placeholder="1000" /></div>
+          <div><label>Linhas</label><input name="maxLines" type="number" placeholder="4" /></div>
+        </div>
+        <label>Chars por linha</label><input name="maxCharsPerLine" type="number" placeholder="18" />
+      </div>
+
+      <div class="box row for-voiceAI">
+        <strong>Voice AI</strong>
+        <label>Título</label><input name="title" placeholder="VOICE" />
+        <label>Record start command</label><textarea name="recordStartCommand"></textarea>
+        <label>Record stop command</label><textarea name="recordStopCommand"></textarea>
+        <label>STT command</label><textarea name="sttCommand" placeholder="node scripts/examples/fake-stt.mjs --out {transcriptFile}"></textarea>
+        <label>LLM command</label><textarea name="llmCommand" placeholder="node scripts/examples/fake-llm.mjs --in {transcriptFile} --out {responseFile}"></textarea>
+        <label>TTS command</label><textarea name="ttsCommand" placeholder="node scripts/examples/fake-tts.mjs --in {responseFile}"></textarea>
+      </div>
+
+      <div class="box row for-translator">
+        <strong>Translator</strong>
+        <label>Título</label><input name="title" placeholder="PT&gt;EN" />
+        <label>STT command</label><textarea name="sttCommand" placeholder="node scripts/examples/fake-stt.mjs --out {transcriptFile}"></textarea>
+        <label>Translate command</label><textarea name="translateCommand" placeholder="node scripts/examples/fake-translate.mjs --in {transcriptFile} --out {responseFile} --to en"></textarea>
+        <label>TTS command</label><textarea name="ttsCommand" placeholder="node scripts/examples/fake-tts.mjs --in {responseFile}"></textarea>
+      </div>
+
+      <div class="box row for-youtubeControl">
+        <strong>YouTube Control</strong>
+        <label>Título</label><input name="title" placeholder="YT" />
+        <label>URL</label><input name="url" placeholder="https://www.youtube.com/" />
+        <label>Hotkey</label><input name="hotkey" placeholder="Space" />
+      </div>
+
+      <div class="box row for-openIconFolder">
+        <strong>Open Icon Folder</strong>
+        <p class="tiny">Abre a pasta segura de icones editaveis usada pelo Glitch FX.</p>
+        <label>Título</label><input name="title" placeholder="ICONS" />
+        <label>Pasta segura</label><input name="folder" placeholder="resources/glitch" />
+      </div>
+
+      <div class="box row for-glitchFx">
+        <strong>Glitch FX</strong>
+        <p class="tiny">Troca temporariamente os icones dos botoes DeckDeckDeco usando imagens da pasta segura. Depois restaura.</p>
+        <label>Título</label><input name="title" placeholder="BUG" />
+        <label>Pasta dos icones</label><input name="folder" placeholder="resources/glitch" />
+        <div class="grid">
+          <div><label>Duração ms</label><input name="durationMs" type="number" placeholder="3000" /></div>
+          <div><label>Frame ms</label><input name="frameMs" type="number" placeholder="120" /></div>
+        </div>
+        <label>Alvo</label>
+        <select name="target">
+          <option value="deckdeckdecoOnly">todos os botoes DeckDeckDeco conhecidos</option>
+          <option value="excludeSelf">todos menos este botao</option>
+          <option value="self">so este botao</option>
+        </select>
+        <label>Restaurar depois?</label>
+        <select name="restore">
+          <option value="true">sim</option>
+          <option value="false">nao</option>
+        </select>
+      </div>
+    </form>
+  </div>
+  <div class="status"><span id="conn">iniciando</span><span id="save" class="warn">aguardando</span></div>
+
+  <script src="../libs/js/constants.js"></script>
+  <script src="../libs/js/eventEmitter.js"></script>
+  <script src="../libs/js/timers.js"></script>
+  <script src="../libs/js/utils.js"></script>
+  <script src="../libs/js/ulanziApi.js"></script>
+  <script src="./inspector.js"></script>
+</body>
+</html>

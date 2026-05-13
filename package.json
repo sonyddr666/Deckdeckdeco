@@ -1,15 +1,21 @@
-import fs from 'fs';
-
-const input = arg('--in') || '.deckdeckdeco/response.txt';
-const text = read(input).trim() || 'No response to speak.';
-console.log('TTS would speak:');
-console.log(text);
-
-function arg(name) {
-  const index = process.argv.indexOf(name);
-  return index >= 0 ? process.argv[index + 1] : '';
-}
-
-function read(file) {
-  try { return fs.readFileSync(file, 'utf8'); } catch { return ''; }
+{
+  "name": "deckdeckdeco",
+  "version": "10.1.0",
+  "description": "DeckDeckDeco v10k: Smart Button profiles, virtual deck pages, editable assets and scripts for Ulanzi D200H.",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "setup:windows": "powershell -File scripts/install-windows.ps1",
+    "install:ulanzi": "powershell -File scripts/install-windows.ps1 -SkipSdk",
+    "demo:test": "node scripts/examples/fake-test.mjs",
+    "demo:snippet": "node scripts/examples/generate-snippet.mjs",
+    "demo:stt": "node scripts/examples/fake-stt.mjs --out .deckdeckdeco/transcript.txt",
+    "demo:llm": "node scripts/examples/fake-llm.mjs --in .deckdeckdeco/transcript.txt --out .deckdeckdeco/response.txt",
+    "demo:tts": "node scripts/examples/fake-tts.mjs --in .deckdeckdeco/response.txt",
+    "demo:translate": "node scripts/examples/fake-translate.mjs --in .deckdeckdeco/transcript.txt --out .deckdeckdeco/translate-response.txt --to en",
+    "check:syntax": "node --check plugin/app.js && node --check property-inspector/inspector.js"
+  },
+  "dependencies": {
+    "ws": "^8.18.0"
+  }
 }

@@ -1,4 +1,7 @@
 {
+  "controlPanel": {
+    "title": "PANEL"
+  },
   "runCommand": {
     "command": "node scripts/examples/fake-test.mjs",
     "cwd": "{pluginRoot}",
@@ -36,5 +39,22 @@
     "url": "https://www.youtube.com/",
     "hotkey": "Space",
     "title": "YT"
+  },
+  "openIconFolder": {
+    "title": "ICONS",
+    "folder": "resources/glitch"
+  },
+  "glitchFx": {
+    "title": "BUG",
+    "folder": "resources/glitch",
+    "durationMs": 3000,
+    "frameMs": 120,
+    "target": "deckdeckdecoOnly",
+    "restore": true
+  },
+  "smartButton": {
+    "smartMode": "manual",
+    "profileId": "A",
+    "slotIndex": 1
   }
 }

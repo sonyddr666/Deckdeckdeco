@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Smart Button</title>
+  <style>
+    *{box-sizing:border-box}
+    html,body{margin:0;overflow:hidden;background:#1e1f22;color:#fff;font-family:Arial,sans-serif;font-size:13px}
+    .wrap{padding:10px 12px;display:grid;gap:8px;max-width:520px}
+    .row{display:grid;grid-template-columns:70px minmax(0,1fr);gap:10px;align-items:center}
+    label{color:#e9ecf7;font-weight:800}
+    select{width:100%;min-width:0;background:#11141b;border:1px solid #465065;color:#fff;border-radius:9px;padding:8px 9px;font:inherit;outline:none}
+    button{border:0;border-radius:9px;background:#2b3446;color:#fff;font-weight:800;padding:8px 10px;cursor:pointer;width:100%}
+    .status{display:flex;gap:8px;align-items:center;justify-content:space-between;color:#9fa8bd;font-size:11px;white-space:nowrap;overflow:hidden}
+    .ok{color:#5cff9d}.warn{color:#ffd166}.bad{color:#ff6b86}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="row">
+      <label for="profileId">Perfil</label>
+      <select id="profileId"><option value="A">A</option></select>
+    </div>
+    <div class="row">
+      <span></span>
+      <button id="reload" type="button">Atualizar lista</button>
+    </div>
+    <div class="status"><span id="conn">iniciando</span><span id="save" class="warn">aguardando</span></div>
+  </div>
+
+  <script src="../libs/js/constants.js"></script>
+  <script src="../libs/js/eventEmitter.js"></script>
+  <script src="../libs/js/timers.js"></script>
+  <script src="../libs/js/utils.js"></script>
+  <script src="../libs/js/ulanziApi.js"></script>
+  <script>
+    const profile = document.querySelector('#profileId');
+    const conn = document.querySelector('#conn');
+    const save = document.querySelector('#save');
+    let selected = 'A';
+    let gotProfiles = false;
+    let hydrating = false;
+
+    $UD.connect('com.ulanzi.ulanzistudio.deckdeckdeco.smartButton');
+
+    $UD.onConnected(() => {
+      conn.textContent = 'conectado';
+      save.textContent = 'pronto';
+      save.className = 'ok';
+      if ($UD.getSettings) $UD.getSettings();
+      requestProfiles();
+    });
+
+    $UD.onAdd(hydrate);
+    $UD.onParamFromApp(hydrate);
+    if ($UD.onDidReceiveSettings) $UD.onDidReceiveSettings(hydrate);
+    if ($UD.onSendToPropertyInspector) {
+      $UD.onSendToPropertyInspector((message) => {
+        const payload = message?.payload || message?.param || {};
+        if (payload.type === 'smartProfiles') {
+          gotProfiles = true;
+          renderProfiles(payload.profiles || [], payload.selected || selected);
+        }
+      });
+    }
+
+    profile.addEventListener('change', () => {
+      if (hydrating) return;
+      selected = profile.value || 'A';
+      saveSettings();
+    });
+    document.querySelector('#reload').addEventListener('click', requestProfiles);
+
+    function hydrate(message) {
+      const payload = message?.settings || message?.param || message?.payload || {};
+      selected = payload.profileId || payload.buttonId || selected || 'A';
+      requestProfiles();
+    }
+
+    function requestProfiles() {
+      if ($UD.sendToPlugin) $UD.sendToPlugin({ type: 'getSmartProfiles' });
+      setTimeout(() => {
+        if (!gotProfiles && profile.options.length === 0) renderProfiles([{ id:'A', title:'A' }], selected);
+      }, 350);
+    }
+
+    function renderProfiles(items, want) {
+      const list = Array.isArray(items) && items.length ? items : [{ id:'A', title:'A' }];
+      hydrating = true;
+      profile.innerHTML = '';
+      for (const item of list) {
+        const opt = document.createElement('option');
+        opt.value = item.id;
+        opt.textContent = item.title && item.title !== item.id ? `${item.id} - ${item.title}` : item.id;
+        profile.appendChild(opt);
+      }
+      selected = want || selected || list[0].id;
+      if (![...profile.options].some(opt => opt.value === selected)) selected = list[0].id;
+      profile.value = selected;
+      hydrating = false;
+    }
+
+    function saveSettings() {
+      const values = { actionType: 'smartButton', smartMode: 'manual', profileId: selected };
+      if ($UD.sendToPlugin) $UD.sendToPlugin({ type: 'smartSelectProfile', profileId: selected });
+      if ($UD.sendParamFromPlugin) $UD.sendParamFromPlugin(values);
+      else if ($UD.setSettings) $UD.setSettings(values);
+      save.textContent = 'salvo';
+      save.className = 'ok';
+    }
+  </script>
+</body>
+</html>

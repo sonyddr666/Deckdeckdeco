@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Control Panel</title>
+  <title>Snippet Card</title>
   <style>
     *{box-sizing:border-box}html,body{margin:0;overflow:hidden;background:#1e1f22;color:#fff;font-family:Arial,sans-serif;font-size:13px}
     .wrap{padding:10px 12px;display:grid;grid-template-columns:90px minmax(0,1fr);gap:8px 10px;align-items:center;max-width:540px}
@@ -16,7 +16,7 @@
 </head>
 <body>
   <div class="wrap">
-    <div class="name">Control Panel</div>
+    <div class="name">Snippet Card</div>
     <button id="openPanel" type="button">Abrir painel web</button>
     
     <div class="status"><span id="conn">iniciando</span><span id="state" class="warn">aguardando</span></div>
@@ -29,7 +29,7 @@
   <script>
     const conn = document.querySelector('#conn');
     const state = document.querySelector('#state');
-    $UD.connect('com.ulanzi.ulanzistudio.deckdeckdeco.controlPanel');
+    $UD.connect('com.ulanzi.ulanzistudio.deckdeckdeco.snippetCard');
     $UD.onConnected(() => { conn.textContent='conectado'; state.textContent='pronto'; state.className='ok'; });
     document.querySelector('#openPanel').addEventListener('click', () => {
       if ($UD.sendToPlugin) $UD.sendToPlugin({ type:'openPanel' });
